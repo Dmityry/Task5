@@ -9,27 +9,18 @@ public class Main {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String path = reader.readLine();
         File dir = new File(path);
-        File[] filesAudio = dir.listFiles((FileFilter) new ExpansionAudio.AudioFileFilter());
-        File[] filesImage = dir.listFiles((FileFilter) new ExpansionImage.ImageFileFilter());
-        File[] filesVideo = dir.listFiles((FileFilter) new ExpantionVideo.VideoFileFilter());
-
-        for (File file : filesAudio) {
-            ZipOutputStream zipAudio = new ZipOutputStream(new FileOutputStream("audio.zip"));
-            WriteFileToZip.doZipAudio(dir, zipAudio);
-            zipAudio.close();
+        if (!dir.isDirectory()) {
+            System.out.println("Error");
+            return;
         }
 
-        for (File file : filesImage) {
-            ZipOutputStream zipImage = new ZipOutputStream(new FileOutputStream("images.zip"));
-            WriteFileToZip.doZipImage(dir, zipImage);
-            zipImage.close();
-        }
-
-        for (File file : filesVideo) {
-            ZipOutputStream zipVideo = new ZipOutputStream(new FileOutputStream("video.zip"));
-            WriteFileToZip.doZipImage(dir, zipVideo);
-            zipVideo.close();
-        }
-
+        WriteFileToZip service = new WriteFileToZip();
+        ZipOutputStream audio = new ZipOutputStream(new FileOutputStream("audio.zip"));
+        ZipOutputStream video = new ZipOutputStream(new FileOutputStream("video.zip"));
+        ZipOutputStream image = new ZipOutputStream(new FileOutputStream("image.zip"));
+        service.doZip(dir, audio, video, image);
+        audio.close();
+        video.close();
+        image.close();
     }
 }
